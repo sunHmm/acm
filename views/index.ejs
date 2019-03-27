@@ -1,0 +1,309 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head lang="zh-cn">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title>acm</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .panel .table {
+            width: 70%;
+            margin-left: 30px;
+            border: 1px solid #cccccc;
+            margin-bottom: 30px;
+
+        }
+
+        tr,
+        td {
+            height: 50px;
+        }
+
+        .tablelist input {
+            border: 0;
+            height: 39px;
+        }
+
+        button {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+
+
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <%for (var i=0;i<dataArr.length;i++){%>
+        <nav id="navbar-example" class="navbar navbar-default navbar-static">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button class="navbar-toggle collapsed" type="button" data-toggle="collapse"
+                        data-target=".bs-example-js-navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#"><%=dataArr[i]['base']['tj_channel']%></a>
+                </div>
+                <div class="collapse navbar-collapse bs-example-js-navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown active head">
+                            <a id="drop1" href="#" class="dropdown-toggle " data-toggle="dropdown" role="button"
+                                aria-haspopup="true" aria-expanded="false">
+                                base
+                                <span class="caret"></span>
+                            </a>
+                        </li>
+                        <li class="dropdown head">
+                            <a id="drop2" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                aria-haspopup="true" aria-expanded="false">
+                                ABtext
+                                <span class="caret"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div><!-- /.nav-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+
+        <!-- Table -->
+        <div class="tablelist" style="width:100%">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>配置名称</th>
+                        <th>配置內容</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <%for (var key in dataArr[i]['base']) {%>
+                    <tr>
+                        <th><input type="text" value="<%=key%>"></th>
+                        <td>
+                            <input type="text" value="<%=dataArr[i]['base'][key]%>">
+
+                        </td>
+                    </tr>
+
+
+                    <%}%>
+            </tbody>
+            <tfoot>
+                <tr>
+                <td><button type="button" class="btn btn-primary submit" style="width:150px">提交</button></td> 
+                <td></td>
+            </tr>
+            </tfoot>
+        </table>
+        
+    </div>
+
+
+<div class="tablelist"  style="display:none;width: 100%">
+    
+        <%for(var j = 0;j<dataArr[i]['ABTest'].length;j++){%>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>配置名称</th>
+                                <th>配置內容</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <%for (var k in dataArr[i]['ABTest'][j]) {%>
+                            <tr>
+                                <th><input type="text" value="<%=k%>"></th>
+                                <td>
+                                    <input type="text" value="<%=dataArr[i]['ABTest'][j][k]%>">
+
+                                </td>
+
+
+                            </tr>
+
+                            <%}%>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td><button type="button"  class="btn btn-primary submitab" style="width:150px">提交</button></td> 
+                    <td></td>
+                </tr>
+                </tfoot>
+        </table>
+        <%}%>
+        </div>
+        <%}%>
+
+
+
+    </div>
+    <script>
+        $(function () {
+            $(".head").on("click", function () {
+                $(this).addClass("active").siblings().removeClass("active")
+                $(".tablelist").eq(($(this).parent().parent().parent().parent().index()/3)*2+$(this).index()).show().siblings('.tablelist').hide()
+            })
+
+
+            $(".submit").on("click",function(){
+                let arr = []
+                let abarr = []
+                $(this).parent().parent().parent().siblings('tbody').children().children().children().each(function(i,ele){
+                    arr.push($(ele).val())
+                })
+                // console.log($(".tablelist").eq($(this).parent().parent().parent().parent().parent().index()+1).children().children('tbody').children().children().children().val())
+                $(".tablelist").eq($(this).parent('td').parent('tr').parent('tfoot').parent('table').parent('.tablelist').index('.tablelist')+1).children('table').children('tbody').children().children().children().each(function(i,ele){
+                    abarr.push($(ele).val())
+                })
+                let base = {}
+                for(var i = 0;i<arr.length;i++){
+                    if(i%2==0){
+                        base[arr[i]]=arr[i+1]
+                    }
+                }
+
+                let flag = 0
+                let res = []
+                while(flag<abarr.length){
+                    flag = abarr.indexOf("w",flag)
+                    if(flag===-1){
+                        break;
+                    }
+                    res.push(flag+2)
+                    flag+=1
+                }
+                let newarr = []
+                var xx = 0
+                res.forEach(ele=>{
+                    
+                    newarr.push(abarr.slice(xx,ele))
+                    xx+=ele
+                })
+               let ABTest = []
+               newarr.forEach(ele=>{
+                   let abobj = {}
+                   for(var j = 0;j<ele.length;j++){
+                    if(j%2==0){
+                        abobj[ele[j]]=ele[j+1]
+                    }
+                   }
+                   ABTest.push(abobj)
+               })
+               
+               let content = {base,ABTest}
+               $.ajax({
+                    url: '/index',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        content:JSON.stringify(content)
+                    },
+                    success: (res) => {
+                        if(res.status===200){
+                            alert("修改成功")
+                            location.reload()
+
+                        }else{
+                            alert(res.msg)
+                        }
+
+
+                    }
+                })
+            })
+
+
+             $(".submitab").on("click",function(){
+                let arr = []
+                let abarr = []
+                $(".tablelist").eq($(this).parent('td').parent('tr').parent('tfoot').parent('table').parent('.tablelist').index('.tablelist')-1).children('table').children('tbody').children().children().children().each(function(i,ele){
+                    arr.push($(ele).val())
+                })
+                
+                // console.log($(".tablelist").eq($(this).parent().parent().parent().parent().parent().index()+1).children().children('tbody').children().children().children().val())
+                $(".tablelist").eq($(this).parent('td').parent('tr').parent('tfoot').parent('table').parent('.tablelist').index('.tablelist')).children('table').children('tbody').children().children().children().each(function(i,ele){
+                    abarr.push($(ele).val())
+                })
+                console.log(abarr)
+                console.log(arr)
+                console.log(1)
+                let base = {}
+                for(var i = 0;i<arr.length;i++){
+                    if(i%2==0){
+                        base[arr[i]]=arr[i+1]
+                    }
+                }
+
+                let flag = 0
+                let res = []
+                while(flag<abarr.length){
+                    flag = abarr.indexOf("w",flag)
+                    if(flag===-1){
+                        break;
+                    }
+                    res.push(flag+2)
+                    flag+=1
+                }
+                let newarr = []
+                var xx = 0
+                res.forEach(ele=>{
+                    
+                    newarr.push(abarr.slice(xx,ele))
+                    xx+=ele
+                })
+               let ABTest = []
+               newarr.forEach(ele=>{
+                   let abobj = {}
+                   for(var j = 0;j<ele.length;j++){
+                    if(j%2==0){
+                        abobj[ele[j]]=ele[j+1]
+                    }
+                   }
+                   ABTest.push(abobj)
+               })
+               
+               let content = {base,ABTest}
+               $.ajax({
+                    url: '/index',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        content:JSON.stringify(content)
+                    },
+                    success: (res) => {
+                        if(res.status===200){
+                            alert("修改成功")
+                            location.reload()
+
+                        }else{
+                            alert(res.msg)
+                        }
+
+                    }
+                })
+            })
+            
+            
+            
+        
+        
+        })
+        
+    </script>
+
+</body>
+
+</html>
