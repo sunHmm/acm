@@ -19,7 +19,6 @@
             margin-left: 30px;
             border: 1px solid #cccccc;
             margin-bottom: 30px;
-
         }
 
         tr,
@@ -27,7 +26,7 @@
             height: 50px;
         }
 
-        .tablelist input {
+        .tablelist input[type="text"] {
             border: 0;
             height: 39px;
         }
@@ -127,7 +126,29 @@
                             <tr>
                                 <th><input type="text" value="<%=k%>"></th>
                                 <td>
+                                    <% if (dataArr[i]['ABTest'][j][k]==='false') { %>
+                                    <div class="btn-group" data-toggle="buttons">
+                                        <label class="btn btn-default togbtn">
+                                            <input type="radio" name="options" id="option2" autocomplete="off"> 开
+                                        </label>
+                                        <label class="btn btn-primary togbtn">
+                                            <input type="radio" name="options" id="option3" autocomplete="off"> 关
+                                        </label>
+                                    </div>
+                                    <% } %>
+                                    <% if (dataArr[i]['ABTest'][j][k]==='true') { %>
+                                    <div class="btn-group" data-toggle="buttons">
+                                        <label class="btn btn-primary togbtn">
+                                            <input type="radio" name="options" id="option2" autocomplete="off"> 开
+                                        </label>
+                                        <label class="btn btn-default togbtn">
+                                            <input type="radio" name="options" id="option3" autocomplete="off"> 关
+                                        </label>
+                                    </div>
+                                    <% } %>
+                                    <% if (k==='w') { %>
                                     <input type="text" value="<%=dataArr[i]['ABTest'][j][k]%>">
+                                    <% } %>
 
                                 </td>
 
@@ -147,11 +168,12 @@
         </div>
         <%}%>
 
-
-
     </div>
     <script>
         $(function () {
+            $(".togbtn").on("click",function(){
+                $(this).addClass("btn btn-primary togbtn").siblings("label").removeClass("btn btn-primary togbtn").addClass("btn btn-default togbtn")
+            })
             $(".head").on("click", function () {
                 $(this).addClass("active").siblings().removeClass("active")
                 $(".tablelist").eq(($(this).parent().parent().parent().parent().index()/3)*2+$(this).index()).show().siblings('.tablelist').hide()
@@ -166,6 +188,19 @@
                 })
                 // console.log($(".tablelist").eq($(this).parent().parent().parent().parent().parent().index()+1).children().children('tbody').children().children().children().val())
                 $(".tablelist").eq($(this).parent('td').parent('tr').parent('tfoot').parent('table').parent('.tablelist').index('.tablelist')+1).children('table').children('tbody').children().children().children().each(function(i,ele){
+                    if($(ele).val()===""){
+                        
+                            if($(ele).children(".btn-primary").text().trim()==="开"){
+                                abarr.push("true")
+                            }
+                            if($(ele).children(".btn-primary").text().trim()==="关"){
+                                abarr.push("false")
+                            }
+                            return
+                            
+                        
+                        
+                    }
                     abarr.push($(ele).val())
                 })
                 let base = {}
@@ -235,11 +270,22 @@
                 
                 // console.log($(".tablelist").eq($(this).parent().parent().parent().parent().parent().index()+1).children().children('tbody').children().children().children().val())
                 $(".tablelist").eq($(this).parent('td').parent('tr').parent('tfoot').parent('table').parent('.tablelist').index('.tablelist')).children('table').children('tbody').children().children().children().each(function(i,ele){
-                    abarr.push($(ele).val())
+                    if($(ele).val()===""){
+                        
+
+                        if($(ele).children(".btn-primary").text().trim()==="开"){
+                            abarr.push("true")
+                        }
+                        if($(ele).children(".btn-primary").text().trim()==="关"){
+                            abarr.push("false")
+                        }
+                        return
+                        
+                    
+                    
+                }
+                abarr.push($(ele).val())
                 })
-                console.log(abarr)
-                console.log(arr)
-                console.log(1)
                 let base = {}
                 for(var i = 0;i<arr.length;i++){
                     if(i%2==0){

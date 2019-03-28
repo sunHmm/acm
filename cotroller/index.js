@@ -19,7 +19,7 @@ const main = async (req, res) => {
             dataArr: result
         })
     } catch (err) {
-        res.send("页面丢失了，请重试")
+        res.send("请刷新重试")
     }
 }
 
@@ -29,7 +29,6 @@ const index = async (req, res) => {
 
         const name = JSON.parse(body.content).base.tj_channel
         const text = JSON.parse(body.content)
-        console.log(JSON.stringify(text,null,5))
 
 
         const ACMClient = require('acm-client').ACMClient;
